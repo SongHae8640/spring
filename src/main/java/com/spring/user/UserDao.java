@@ -2,7 +2,7 @@ package com.spring.user;
 
 import java.sql.*;
 
-public class UserDao {
+public abstract class UserDao {
 
     public void add(User user) throws ClassNotFoundException, SQLException {
         Connection conn = getConnection();
@@ -52,9 +52,5 @@ public class UserDao {
         conn.close();
     }
 
-    private Connection getConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("org.h2.Driver");
-        Connection conn = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
-        return conn;
-    }
+    abstract Connection getConnection() throws ClassNotFoundException, SQLException;
 }
