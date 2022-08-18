@@ -2,10 +2,16 @@ package com.spring.user;
 
 import java.sql.*;
 
-public abstract class UserDao {
+public class UserDao {
+
+    private final ConnectionMaker connectorMaker;
+
+    public UserDao(ConnectionMaker connectorMaker){
+        this.connectorMaker = connectorMaker;
+    }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Connection conn = getConnection();
+        Connection conn = connectorMaker.makeConnection();
 
         PreparedStatement ps = conn.prepareStatement(
                 "INSERT INTO USERS(id, name, password) VALUES (?,?,?)");
@@ -20,7 +26,7 @@ public abstract class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Connection conn = getConnection();
+        Connection conn = connectorMaker.makeConnection();
 
         PreparedStatement ps = conn.prepareStatement(
                 "SELECT * FROM users WHERE id  = ?");
@@ -41,7 +47,7 @@ public abstract class UserDao {
     }
 
     public void clear() throws ClassNotFoundException, SQLException {
-        Connection conn = getConnection();
+        Connection conn = connectorMaker.makeConnection();
 
         PreparedStatement ps = conn.prepareStatement(
                 "DELETE FROM USERS");
@@ -51,6 +57,4 @@ public abstract class UserDao {
         ps.close();
         conn.close();
     }
-
-    abstract Connection getConnection() throws ClassNotFoundException, SQLException;
 }

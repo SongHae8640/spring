@@ -11,7 +11,7 @@ class UserDaoTest {
 
     @BeforeEach
     public void clearAllUser() throws SQLException, ClassNotFoundException {
-        UserDao userDao = new UserDaoForA();
+        UserDao userDao = new UserDao(new ConnectionMakerForA());
         userDao.clear();
     }
 
@@ -22,7 +22,7 @@ class UserDaoTest {
         user.setName("송");
         user.setPassword("송송");
 
-        UserDao userDao = new UserDaoForA();
+        UserDao userDao = new UserDao(new ConnectionMakerForA());
         userDao.add(user);
 
         User savedUser = userDao.get(user.getId());
