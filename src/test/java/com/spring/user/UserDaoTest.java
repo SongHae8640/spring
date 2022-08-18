@@ -1,12 +1,19 @@
 package com.spring.user;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserDaoTest {
+
+    @BeforeEach
+    public void clearAllUser() throws SQLException, ClassNotFoundException {
+        UserDao userDao = new UserDao();
+        userDao.clear();
+    }
 
     @Test
     public void addTest() throws SQLException, ClassNotFoundException {
