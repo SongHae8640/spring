@@ -5,8 +5,7 @@ import java.sql.*;
 public class UserDao {
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Class.forName("org.h2.Driver");
-        Connection conn = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
+        Connection conn = getConnection();
 
         PreparedStatement ps = conn.prepareStatement(
                 "INSERT INTO USERS(id, name, password) VALUES (?,?,?)");
@@ -21,8 +20,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Class.forName("org.h2.Driver");
-        Connection conn = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
+        Connection conn = getConnection();
 
         PreparedStatement ps = conn.prepareStatement(
                 "SELECT * FROM users WHERE id  = ?");
@@ -40,5 +38,23 @@ public class UserDao {
         conn.close();
 
         return user;
+    }
+
+    public void clear() throws ClassNotFoundException, SQLException {
+        Connection conn = getConnection();
+
+        PreparedStatement ps = conn.prepareStatement(
+                "DELETE FROM USERS");
+
+        ps.executeUpdate();
+
+        ps.close();
+        conn.close();
+    }
+
+    private Connection getConnection() throws ClassNotFoundException, SQLException {
+        Class.forName("org.h2.Driver");
+        Connection conn = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
+        return conn;
     }
 }
