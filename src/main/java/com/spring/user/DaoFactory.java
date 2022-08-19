@@ -11,6 +11,10 @@ public class DaoFactory {
     }
 
     public MessageDao messageDao(){
-        return new MessageDao(new ConnectionMakerForA());
+        return new MessageDao(getConnectorMaker());
+    }
+
+    private ConnectionMaker getConnectorMaker() {
+        return new ConnectionMakerForA();
     }
 }
