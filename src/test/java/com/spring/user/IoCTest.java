@@ -32,4 +32,19 @@ public class IoCTest {
 
 
     }
+
+    @Test
+    public void compareBeans(){
+        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        UserDao userDao1 = context.getBean("userDao", UserDao.class);
+        UserDao userDao2 = context.getBean("userDao", UserDao.class);
+
+        assertEquals(userDao1, userDao2);
+
+        assertEquals(userDao1.toString(), userDao2.toString());
+        System.out.println(userDao1);
+        System.out.println(userDao2);
+
+
+    }
 }
