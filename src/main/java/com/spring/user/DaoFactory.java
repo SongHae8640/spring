@@ -8,20 +8,26 @@ public class DaoFactory {
 
     @Bean
     public UserDao userDao(){
-        return new UserDao(getConnectorMaker());
+        return new UserDao(connectionMaker());
+    }
+
+    @Bean
+    public ConnectionMaker realConnectorMaker() {
+        return new ConnectionMakerForA();
+    }
+
+    @Bean
+    public ConnectionMaker connectionMaker(){
+        return new CountingConnectionMaker(realConnectorMaker());
     }
 
     @Bean
     public AccountDao accountDao(){
-        return new AccountDao(getConnectorMaker());
+        return new AccountDao(connectionMaker());
     }
 
     @Bean
     public MessageDao messageDao(){
-        return new MessageDao(getConnectorMaker());
-    }
-
-    private ConnectionMaker getConnectorMaker() {
-        return new ConnectionMakerForA();
+        return new MessageDao(connectionMaker());
     }
 }

@@ -40,8 +40,6 @@ public class UserDao {
         user.setName(rs.getString("name"));
         user.setPassword(rs.getString("password"));
 
-        ps.close();
-        conn.close();
 
         return user;
     }
