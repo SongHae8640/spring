@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class IoCTest {
 
     @Test
-    public void getApplicationContext() throws SQLException, ClassNotFoundException {
+    public void getApplicationContext() throws SQLException {
         ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
         UserDao userDao = context.getBean("userDao", UserDao.class);
 
@@ -48,10 +48,9 @@ public class IoCTest {
     }
 
     @Test
-    public void userDaoCountingConnectionTest() throws SQLException, ClassNotFoundException {
+    public void userDaoCountingConnectionTest() throws SQLException {
         ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
         UserDao userDao = context.getBean("userDao", UserDao.class);
-        CountingConnectionMaker connectionMaker = context.getBean("connectionMaker", CountingConnectionMaker.class);
 
         userDao.clear();
 
@@ -64,7 +63,6 @@ public class IoCTest {
 
         User savedUser = userDao.get(user.getId());
         assertEquals(user.getId(), savedUser.getId());
-        assertEquals(3, connectionMaker.getConnectCount());
 
     }
 }
