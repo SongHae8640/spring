@@ -1,7 +1,12 @@
 package com.spring.user;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UserDao {
 
@@ -34,12 +39,16 @@ public class UserDao {
         ps.setString(1, id);
 
         ResultSet rs = ps.executeQuery();
-        rs.next();
+        User user = null;
+        if(rs.next()){
+            user = new User();
+            user.setId(rs.getString("id"));
+            user.setName(rs.getString("name"));
+            user.setPassword(rs.getString("password"));
 
-        User user = new User();
-        user.setId(rs.getString("id"));
-        user.setName(rs.getString("name"));
-        user.setPassword(rs.getString("password"));
+        }
+
+        if(user == null) throw new EmptyResultDataAccessException(1);
 
 
         return user;

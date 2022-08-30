@@ -1,28 +1,45 @@
 package com.spring.user;
 
-import org.h2.jdbc.JdbcSQLNonTransientException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = DaoFactory.class)
+@DirtiesContext
 public class IoCTest{
+
+    @Autowired
+    private UserDao userDao;
+
+    private User user;
+    private User user2;
+
+    @BeforeEach
+    public void setUp(){
+        this.user = new User("Song","송","송송");
+        this.user2 =  new User("Song2","송2","송송2");
+
+        System.out.println(userDao.toString());
+        System.out.println(user.toString());
+
+    }
 
     @Test
     public void getApplicationContext() throws SQLException {
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        UserDao userDao = context.getBean("userDao", UserDao.class);
-
         userDao.clear();
-
-        User user = new User();
-        user.setId("Song");
-        user.setName("송");
-        user.setPassword("송송");
 
         userDao.add(user);
 
@@ -49,15 +66,7 @@ public class IoCTest{
 
     @Test
     public void userDaoCountingConnectionTest() throws SQLException {
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        UserDao userDao = context.getBean("userDao", UserDao.class);
-
         userDao.clear();
-
-        User user = new User();
-        user.setId("Song");
-        user.setName("송");
-        user.setPassword("송송");
 
         userDao.add(user);
 
@@ -68,16 +77,8 @@ public class IoCTest{
 
     @Test
     public void addAndGetTest() throws SQLException {
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        UserDao userDao = context.getBean("userDao", UserDao.class);
-
         userDao.clear();
         assertEquals(0,userDao.getCount());
-
-        User user = new User();
-        user.setId("Song");
-        user.setName("송");
-        user.setPassword("송송");
 
         userDao.add(user);
         assertEquals(1, userDao.getCount());
@@ -91,9 +92,6 @@ public class IoCTest{
 
     @Test
     public void userCount() throws SQLException{
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        UserDao userDao = context.getBean("userDao", UserDao.class);
-
         userDao.clear();
         assertEquals(0,userDao.getCount());
 
@@ -108,12 +106,9 @@ public class IoCTest{
 
     @Test()
     public void getUserFailure() throws SQLException{
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        UserDao userDao = context.getBean("userDao", UserDao.class);
-
         userDao.clear();
         assertEquals(0,userDao.getCount());
 
-        assertThrows(JdbcSQLNonTransientException.class , () -> userDao.get("UNKNOWN_ID"));
+        assertThrows(EmptyResultDataAccessException.class , () -> userDao.get("UNKNOWN_ID"));
     }
 }
