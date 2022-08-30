@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,9 +34,8 @@ public class IoCTest{
         this.user = new User("Song","송","송송");
         this.user2 =  new User("Song2","송2","송송2");
 
-        System.out.println(userDao.toString());
-        System.out.println(user.toString());
-
+        DataSource dataSource = new SingleConnectionDataSource("jdbc:h2:tcp://localhost/~/test","sa","",true);
+        userDao.setDataSource(dataSource);
     }
 
     @Test
