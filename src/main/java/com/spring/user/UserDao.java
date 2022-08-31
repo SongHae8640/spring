@@ -55,29 +55,56 @@ public class UserDao {
     }
 
     public void clear() throws SQLException {
-        Connection conn = dataSource.getConnection();
+        Connection conn = null;
+        PreparedStatement ps = null;
 
-        PreparedStatement ps = conn.prepareStatement(
-                "DELETE FROM USERS");
+        try {
+            conn = dataSource.getConnection();
+            ps = conn.prepareStatement("DELETE FROM USERS");
+            ps.executeUpdate();
+        }catch (SQLException e){
+            throw e;
+        }finally {
+            if(ps != null){
+                ps.close();
+            }
 
-        ps.executeUpdate();
+            if(conn != null){
+                conn.close();
+            }
 
-        ps.close();
-        conn.close();
+        }
     }
 
     public int getCount() throws SQLException{
-        Connection conn = dataSource.getConnection();
-        PreparedStatement ps = conn.prepareStatement("SELECT COUNT(1) FROM USERS");
-        ResultSet rs = ps.executeQuery();
-        rs.next();
-        int count = rs.getInt(1);
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
-        rs.close();
-        ps.close();
-        conn.close();
+        try {
+            conn = dataSource.getConnection();
+            ps = conn.prepareStatement("SELECT COUNT(1) FROM USERS");
+            ps.executeUpdate();
 
-        return count;
+            rs = ps.executeQuery();
+            rs.next();
+            return rs.getInt(1);
+        }catch (SQLException e){
+            throw e;
+        }finally {
+            if(rs != null){
+                rs.close();
+            }
+
+            if(ps != null){
+                ps.close();
+            }
+
+            if(conn != null){
+                conn.close();
+            }
+
+        }
     }
 
     public void setDataSource(DataSource dataSource) {
