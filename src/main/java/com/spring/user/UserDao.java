@@ -18,18 +18,7 @@ public class UserDao {
 
 
     public void add(User user) throws  SQLException {
-        Connection conn = dataSource.getConnection();
-
-        PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO USERS(id, name, password) VALUES (?,?,?)");
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
-
-        ps.executeUpdate();
-
-        ps.close();
-        conn.close();
+        jdbcContextWithStatementsStrategy(new AddStatement(user));
     }
 
     public User get(String id) throws SQLException {
@@ -67,8 +56,6 @@ public class UserDao {
         try {
             conn = dataSource.getConnection();
             ps = conn.prepareStatement("SELECT COUNT(1) FROM USERS");
-            ps.executeUpdate();
-
             rs = ps.executeQuery();
             rs.next();
             return rs.getInt(1);
