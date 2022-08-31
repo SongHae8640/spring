@@ -16,6 +16,7 @@ public class UserDao {
         this.dataSource = dataSource;
     }
 
+
     public void add(User user) throws  SQLException {
         Connection conn = dataSource.getConnection();
 
@@ -55,25 +56,7 @@ public class UserDao {
     }
 
     public void clear() throws SQLException {
-        Connection conn = null;
-        PreparedStatement ps = null;
-
-        try {
-            conn = dataSource.getConnection();
-            ps = makeStatement(conn);
-            ps.executeUpdate();
-        }catch (SQLException e){
-            throw e;
-        }finally {
-            if(ps != null){
-                ps.close();
-            }
-
-            if(conn != null){
-                conn.close();
-            }
-
-        }
+        jdbcContextWithStatementsStrategy(new DeleteAllStatement());
     }
 
     public int getCount() throws SQLException{
@@ -111,8 +94,25 @@ public class UserDao {
         this.dataSource = dataSource;
     }
 
+    public void jdbcContextWithStatementsStrategy(StatementStrategy stmt) throws SQLException{
+        Connection conn = null;
+        PreparedStatement ps = null;
 
-    private PreparedStatement makeStatement(Connection conn) throws SQLException {
-        return conn.prepareStatement("DELETE FROM USERS");
+        try {
+            conn = dataSource.getConnection();
+            ps = stmt.makeStatement(conn);
+            ps.executeUpdate();
+        }catch (SQLException e){
+            throw e;
+        }finally {
+            if(ps != null){
+                ps.close();
+            }
+
+            if(conn != null){
+                conn.close();
+            }
+
+        }
     }
 }
