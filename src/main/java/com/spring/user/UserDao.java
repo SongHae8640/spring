@@ -1,5 +1,6 @@
 package com.spring.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.sql.DataSource;
@@ -10,15 +11,26 @@ import java.sql.SQLException;
 
 public class UserDao {
 
+    @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private JdbcContext jdbcContext;
 
     public UserDao(DataSource dataSource){
         this.dataSource = dataSource;
     }
 
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public void setJdbcContext(JdbcContext jdbcContext) {
+        this.jdbcContext = jdbcContext;
+    }
 
     public void add(User user) throws  SQLException {
-        jdbcContextWithStatementsStrategy(
+        jdbcContext.workWithStatementStrategy(
             new StatementStrategy() {
                 @Override
                 public PreparedStatement makeStatement(Connection conn) throws SQLException {
@@ -58,7 +70,7 @@ public class UserDao {
     }
 
     public void clear() throws SQLException {
-        jdbcContextWithStatementsStrategy(
+        jdbcContext.workWithStatementStrategy(
             new StatementStrategy() {
                 @Override
                 public PreparedStatement makeStatement(Connection conn) throws SQLException {
@@ -86,32 +98,6 @@ public class UserDao {
                 rs.close();
             }
 
-            if(ps != null){
-                ps.close();
-            }
-
-            if(conn != null){
-                conn.close();
-            }
-
-        }
-    }
-
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    public void jdbcContextWithStatementsStrategy(StatementStrategy stmt) throws SQLException{
-        Connection conn = null;
-        PreparedStatement ps = null;
-
-        try {
-            conn = dataSource.getConnection();
-            ps = stmt.makeStatement(conn);
-            ps.executeUpdate();
-        }catch (SQLException e){
-            throw e;
-        }finally {
             if(ps != null){
                 ps.close();
             }

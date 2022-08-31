@@ -27,6 +27,11 @@ public class DaoFactory {
     }
 
     @Bean
+    public JdbcContext jdbcContext(){
+        return new JdbcContext(dataSource());
+    }
+
+    @Bean
     public ConnectionMaker realConnectorMaker() {
         return new ConnectionMakerForA();
     }
