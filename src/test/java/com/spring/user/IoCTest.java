@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = DaoFactory.class)
-@DirtiesContext
 public class IoCTest{
 
     @Autowired
@@ -33,9 +32,6 @@ public class IoCTest{
     public void setUp(){
         this.user = new User("Song","송","송송");
         this.user2 =  new User("Song2","송2","송송2");
-
-        DataSource dataSource = new SingleConnectionDataSource("jdbc:h2:tcp://localhost/~/test","sa","",true);
-        userDao.setDataSource(dataSource);
     }
 
     @Test
