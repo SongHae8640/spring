@@ -30,20 +30,15 @@ public class UserDao {
     }
 
     public void add(User user) throws  SQLException {
-        jdbcContext.workWithStatementStrategy(
-            new StatementStrategy() {
-                @Override
-                public PreparedStatement makeStatement(Connection conn) throws SQLException {
-                    PreparedStatement ps = conn.prepareStatement(
-                            "INSERT INTO USERS(id, name, password) VALUES (?,?,?)");
-                    ps.setString(1, user.getId());
-                    ps.setString(2, user.getName());
-                    ps.setString(3, user.getPassword());
+        jdbcContext.workWithStatementStrategy(conn -> {
+            PreparedStatement ps = conn.prepareStatement(
+                    "INSERT INTO USERS(id, name, password) VALUES (?,?,?)");
+            ps.setString(1, user.getId());
+            ps.setString(2, user.getName());
+            ps.setString(3, user.getPassword());
 
-                    return ps;
-                }
-            }
-        );
+            return ps;
+        });
     }
 
     public User get(String id) throws SQLException {
@@ -70,14 +65,7 @@ public class UserDao {
     }
 
     public void clear() throws SQLException {
-        jdbcContext.workWithStatementStrategy(
-            new StatementStrategy() {
-                @Override
-                public PreparedStatement makeStatement(Connection conn) throws SQLException {
-                    return conn.prepareStatement("DELETE FROM USERS");
-                }
-            }
-        );
+        jdbcContext.workWithStatementStrategy(conn -> conn.prepareStatement("DELETE FROM USERS"));
     }
 
     public int getCount() throws SQLException{
