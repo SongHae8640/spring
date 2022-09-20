@@ -28,7 +28,7 @@ public class Calculator {
                 }
             }
         }
-
-
     }
+
+    // ... 곱하는 기능 등 다양한 연산이 추가된다면?
 }
