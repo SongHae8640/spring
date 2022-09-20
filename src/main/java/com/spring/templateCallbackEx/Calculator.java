@@ -6,6 +6,47 @@ import java.io.*;
 
 public class Calculator {
 
+    public Integer lineReadTemplate(String path, LineCallback callback, int initValue){
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(new ClassPathResource(path).getFile()));
+            String line;
+            int result = initValue;
+            while((line = br.readLine()) != null){
+                result = callback.doWithLine(line, result);
+            }
+            return result;
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+        }finally {
+            if(br != null){
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    public Integer calcSum2(String path) throws RuntimeException {
+        LineCallback callback = new LineCallback() {
+            @Override
+            public Integer doWithLine(String line, Integer value) {
+                return value + Integer.parseInt(line);
+            }
+        };
+
+        return lineReadTemplate(path, callback ,0);
+    }
+
+    public Integer calcMultiply2(String path) {
+        return lineReadTemplate(path, (line, value) -> value * Integer.parseInt(line), 1);
+    }
+
+    //---
+
     public Integer fileReadTemplate(String path, BufferedReaderCallback callback){
         BufferedReader br = null;
         try {
@@ -51,4 +92,6 @@ public class Calculator {
             return result;
         });
     }
+
+
 }
